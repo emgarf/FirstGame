@@ -1,41 +1,45 @@
-import Phaser from 'phaser'
+import Phaser from 'phaser';
+import {movePlayer} from './movePlayer';
 
 export default class HelloWorldScene extends Phaser.Scene {
 	constructor() {
 		super('hello-world');
 	}
 
-	arrow: Phaser.Types.Input.Keyboard.CursorKeys | undefined;
-	player: Phaser.Types.Physics.Arcade.ImageWithDynamicBody | undefined;
+	arrow!: Phaser.Types.Input.Keyboard.CursorKeys;
+	player!: Phaser.Types.Physics.Arcade.ImageWithDynamicBody;
+	walls!: Phaser.Physics.Arcade.StaticGroup;
 
 	preload() {
 		this.load.image('background', 'assets/background.png');
 		this.load.image('player', 'assets/player.png')
+		this.load.image('wallH', 'assets/wallHorizontal.png')
 	}
 
 	create() {
 		this.add.image(250, 170, 'background');
-		this.player = this.physics.add.image(400, 100, 'player');
+		this.player = this.physics.add.image(100, 100, 'player');
 		this.arrow = this.input.keyboard.createCursorKeys();
-
-		this.player.setCollideWorldBounds(true);
+		// this.player.setCollideWorldBounds(true);
+		this.createWorld();
 	}
 
 	update() {
-		this.movePlayer();
+		this.physics.collide(this.player, this.walls);
+		movePlayer(this.arrow, this.player);
+
+		if (this.player.y > 340) {
+			this.playerDie();
+		}
 	}
 
-	movePlayer() {
-		if (this.arrow?.left.isDown) {
-        this.player?.body.setVelocityX(-200);
-    } else if (this.arrow?.right.isDown) {
-        this.player?.body.setVelocityX(200);
-    } else {
-        this.player?.body.setVelocityX(0);
-    }
+	createWorld() {
+		this.walls = this.physics.add.staticGroup();
+		this.walls.create(50, 300, 'wallH');
+		this.walls.create(450, 300, 'wallH');
+	}
 
-		if (this.arrow?.up.isDown && this.player?.body.onFloor()) {
-			this.player.body.setVelocityY(-320);
-		}
+	playerDie() {
+		this.scene.start(this);
 	}
 }
