@@ -2,34 +2,40 @@ import Phaser from 'phaser'
 
 export default class HelloWorldScene extends Phaser.Scene {
 	constructor() {
-		super('hello-world')
+		super('hello-world');
 	}
 
-	preload() {
-		this.load.setBaseURL('https://labs.phaser.io')
+	arrow: Phaser.Types.Input.Keyboard.CursorKeys | undefined;
+	player: Phaser.Types.Physics.Arcade.ImageWithDynamicBody | undefined;
 
-		this.load.image('sky', 'assets/skies/space3.png')
-		this.load.image('logo', 'assets/sprites/phaser3-logo.png')
-		this.load.image('red', 'assets/particles/red.png')
+	preload() {
+		this.load.image('background', 'assets/background.png');
+		this.load.image('player', 'assets/player.png')
 	}
 
 	create() {
-		this.add.image(400, 300, 'sky')
+		this.add.image(250, 170, 'background');
+		this.player = this.physics.add.image(400, 100, 'player');
+		this.arrow = this.input.keyboard.createCursorKeys();
 
-		const particles = this.add.particles('red')
+		this.player.setCollideWorldBounds(true);
+	}
 
-		const emitter = particles.createEmitter({
-			speed: 100,
-			scale: { start: 1, end: 0 },
-			blendMode: 'ADD',
-		})
+	update() {
+		this.movePlayer();
+	}
 
-		const logo = this.physics.add.image(400, 100, 'logo')
+	movePlayer() {
+		if (this.arrow?.left.isDown) {
+        this.player?.body.setVelocityX(-200);
+    } else if (this.arrow?.right.isDown) {
+        this.player?.body.setVelocityX(200);
+    } else {
+        this.player?.body.setVelocityX(0);
+    }
 
-		logo.setVelocity(100, 200)
-		logo.setBounce(1, 1)
-		logo.setCollideWorldBounds(true)
-
-		emitter.startFollow(logo)
+		if (this.arrow?.up.isDown && this.player?.body.onFloor()) {
+			this.player.body.setVelocityY(-320);
+		}
 	}
 }
