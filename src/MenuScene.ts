@@ -7,7 +7,7 @@ export default class MenuScene extends Phaser.Scene {
 
   create(data: {score: number}) {
     // Background animation
-    const particles = this.add.particles('pixel');
+    const particles = this.add.particles('rain');
     particles.createEmitter({
 			quantity: 1,
       alpha: {start: 0.5, end: 0},

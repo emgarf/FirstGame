@@ -16,17 +16,17 @@ export default class PlayScene extends Phaser.Scene {
 	emitter;
 
 	create() {
-		const particles = this.add.particles('pixel');
+		const particles = this.add.particles('pixelPlayer');
 		this.score = 0;
 		this.player = this.physics.add.image(150, 150, 'player');
 		this.arrow = this.input.keyboard.createCursorKeys();
 		this.scoreLabel = this.add.text(30, 25, 'score: 0', {fontFamily: 'Arial', fontSize: '22px', color: '#fff'});
 		this.enemies = this.physics.add.group();
 		this.emitter = particles.createEmitter({
-			quantity: 15,
+			quantity: 20,
 			speed: {min: -150, max: 150},
-			scale: {start: 2, end: 0.1},
-			lifespan: 800,
+			scale: {start: 8, end: 1},
+			lifespan: 600,
 			on: false,
 		})
 
@@ -126,7 +126,7 @@ export default class PlayScene extends Phaser.Scene {
 		this.emitter.explode();
 
 		this.time.addEvent({
-			delay: 1000,
+			delay: 600,
 			callback: () => {this.bgSound.destroy(); this.scene.start('MenuScene', {score: this.score})}
 		})
 	}

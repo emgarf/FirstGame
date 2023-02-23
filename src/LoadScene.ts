@@ -6,7 +6,8 @@ export default class LoadScene extends Phaser.Scene {
   preload() {
     this.load.image('player', 'images/player.png');
 		this.load.image('wallH', 'images/wallHorizontal.png');
-		this.load.image('pixel', 'images/pixel.png');
+		this.load.image('rain', 'images/pixel.png');
+		this.load.image('pixelPlayer', 'images/pixelPlayer.png');
 		this.load.image('wallV', 'images/wallVertical.png');
 		this.load.audio('pooboy', ['musics/pooboy.ogg', 'musics/pooboy.mp3']);
 		this.load.audio('death', ['musics/death.ogg', 'musics/death.mp3']);
