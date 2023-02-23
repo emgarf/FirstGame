@@ -11,9 +11,10 @@ export default class PlayScene extends Phaser.Scene {
 	enemies;
 	bgSound;
 	scoreLabel;
-	score: number = 0;
+	score!: number;
 
 	create() {
+		this.score = 0;
 		this.player = this.physics.add.image(150, 150, 'player');
 		this.arrow = this.input.keyboard.createCursorKeys();
 		this.scoreLabel = this.add.text(30, 25, 'score: 0', {fontFamily: 'Arial', fontSize: '22px', color: '#fff'});
@@ -96,7 +97,7 @@ export default class PlayScene extends Phaser.Scene {
 
 	incrementScore() {
 		this.score += 5;
-		this.scoreLabel.setText('score : ' + this.score);
+		this.scoreLabel.setText('score: ' + this.score);
 	}
 
 	createWorld() {
