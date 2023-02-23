@@ -19,7 +19,7 @@ export default class PlayScene extends Phaser.Scene {
 	create() {
 		const particles = this.add.particles('pixelPlayer');
 		this.score = 0;
-		this.player = this.physics.add.image(150, 150, 'player');
+		this.player = this.physics.add.image(250, 250, 'player');
 		this.arrow = this.input.keyboard.createCursorKeys();
 		this.scoreLabel = this.add.text(30, 25, 'score: 0', {fontFamily: 'Arial', fontSize: '22px', color: '#fff'});
 		this.enemies = this.physics.add.group();
@@ -61,13 +61,16 @@ export default class PlayScene extends Phaser.Scene {
 			this.addTopSingleEnemy();
 		} else {
 			this.addTopRowEnemies(this.score);
-			if (this.score > 160) {
+			if (this.score > 150) {
 				this.addRightSingleEnemy()
 			}
 		}
 	}
 
 	addPyramidEnemies() {
+		const enemy = this.enemies.create(Phaser.Math.Between(130, 370), -10, 'enemy');
+		enemy.body.velocity.y = 200;
+
 
 	}
 
@@ -98,7 +101,7 @@ export default class PlayScene extends Phaser.Scene {
 	addTopRowEnemies(currentScore: number) {
 		const noEnemy1 = Phaser.Math.Between(0, 5);
 		let noEnemy2 = 10;
-		if (currentScore < 150) {
+		if (currentScore < 100) {
 			if (noEnemy1 === 5) {
 				noEnemy2 = 4;
 			} else {
@@ -111,7 +114,7 @@ export default class PlayScene extends Phaser.Scene {
 				continue;
 			}
 			const enemy = this.enemies.create(i * 48 + 130, -10, 'enemy');
-			enemy.body.velocity.y = 200;
+			enemy.body.velocity.y = Math.min(200 + this.score, 300);
 
 			this.time.addEvent({
 				delay: 5000,
@@ -129,10 +132,10 @@ export default class PlayScene extends Phaser.Scene {
 
 	createWorld() {
 		this.walls = this.physics.add.staticGroup();
-		this.walls.create(250, 390, 'wallH');
-		this.walls.create(250, 90, 'wallH');
-		this.walls.create(100, 240, 'wallV');
-		this.walls.create(400, 240, 'wallV');
+		this.walls.create(250, 400, 'wallH');
+		this.walls.create(250, 100, 'wallH');
+		this.walls.create(100, 250, 'wallV');
+		this.walls.create(400, 250, 'wallV');
 	}
 
 	playerDie() {
