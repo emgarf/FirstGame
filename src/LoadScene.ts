@@ -9,6 +9,7 @@ export default class LoadScene extends Phaser.Scene {
 		this.load.image('pixel', 'images/pixel.png');
 		this.load.image('wallV', 'images/wallVertical.png');
 		this.load.audio('pooboy', ['musics/pooboy.ogg', 'musics/pooboy.mp3']);
+		this.load.audio('death', ['musics/death.ogg', 'musics/death.mp3']);
 		this.load.image('enemy', 'images/enemy.png');
 
     let loadLabel = this.add.text(250, 250, 'loading', {font: '30px Arial', color: '#fff'});

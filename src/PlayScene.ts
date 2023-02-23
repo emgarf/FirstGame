@@ -10,6 +10,7 @@ export default class PlayScene extends Phaser.Scene {
 	walls!: Phaser.Physics.Arcade.StaticGroup;
 	enemies;
 	bgSound;
+	deathSound;
 	scoreLabel;
 	score!: number;
 	emitter;
@@ -36,6 +37,7 @@ export default class PlayScene extends Phaser.Scene {
 		})
 
 		this.bgSound = this.sound.add('pooboy', {volume: 0.3});
+		this.deathSound = this.sound.add('death', {volume: 0.7});
 		this.bgSound.loop = true;
 		this.bgSound.play();
 		this.createWorld();
@@ -117,6 +119,7 @@ export default class PlayScene extends Phaser.Scene {
 	}
 
 	playerDie() {
+		this.deathSound.play();
 		this.player.destroy();
 		this.cameras.main.shake(300, 0.02);
 		this.emitter.setPosition(this.player.x, this.player.y);
