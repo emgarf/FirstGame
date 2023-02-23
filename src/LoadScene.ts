@@ -4,11 +4,11 @@ export default class LoadScene extends Phaser.Scene {
 	}
 
   preload() {
-    this.load.image('player', 'assets/player.png');
-		this.load.image('wallH', 'assets/wallHorizontal.png');
-		this.load.image('wallV', 'assets/wallVertical.png');
-		this.load.audio('pooboy', 'assets/pooboy.ogg');
-		this.load.image('enemy', 'assets/enemy.png');
+    this.load.image('player', 'images/player.png');
+		this.load.image('wallH', 'images/wallHorizontal.png');
+		this.load.image('wallV', 'images/wallVertical.png');
+		this.load.audio('pooboy', ['musics/pooboy.ogg', 'musics/pooboy.mp3']);
+		this.load.image('enemy', 'images/enemy.png');
 
     let loadLabel = this.add.text(250, 250, 'loading', {font: '30px Arial', color: '#fff'});
     loadLabel.setOrigin(0.5, 0.5);
