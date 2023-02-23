@@ -14,6 +14,7 @@ export default class PlayScene extends Phaser.Scene {
 	scoreLabel;
 	score!: number;
 	emitter;
+	nextEnemy!: number;
 
 	create() {
 		const particles = this.add.particles('pixelPlayer');
@@ -30,20 +31,23 @@ export default class PlayScene extends Phaser.Scene {
 			on: false,
 		})
 
-		this.time.addEvent({
-			delay: Phaser.Math.Between(900, 1200),
-			callback: () => this.handleEnemies(),
-			loop: true,
-		})
-
 		this.bgSound = this.sound.add('pooboy', {volume: 0.3});
 		this.deathSound = this.sound.add('death', {volume: 0.7});
 		this.bgSound.loop = true;
 		this.bgSound.play();
 		this.createWorld();
+
+		this.nextEnemy = 0;
 	}
 
 	update() {
+		const now = Date.now();
+
+		if (this.nextEnemy < now) {
+			this.handleEnemies();
+			this.nextEnemy = now + Phaser.Math.Between(1000, 1400);
+		}
+
 		this.physics.collide(this.player, this.walls);
 		movePlayer(this.arrow, this.player);
 
@@ -53,14 +57,18 @@ export default class PlayScene extends Phaser.Scene {
 	}
 
 	handleEnemies() {
-		if (this.score <= 50) {
+		if (this.score <= 40) {
 			this.addTopSingleEnemy();
 		} else {
-			this.addTopRowEnemies();
-			if (this.score > 110) {
+			this.addTopRowEnemies(this.score);
+			if (this.score > 160) {
 				this.addRightSingleEnemy()
 			}
 		}
+	}
+
+	addPyramidEnemies() {
+
 	}
 
 	addTopSingleEnemy() {
@@ -87,10 +95,19 @@ export default class PlayScene extends Phaser.Scene {
 		this.incrementScore();
 	}
 
-	addTopRowEnemies() {
-		const rand = Phaser.Math.Between(0, 5);
+	addTopRowEnemies(currentScore: number) {
+		const noEnemy1 = Phaser.Math.Between(0, 5);
+		let noEnemy2 = 10;
+		if (currentScore < 150) {
+			if (noEnemy1 === 5) {
+				noEnemy2 = 4;
+			} else {
+				noEnemy2 = noEnemy1 + 1;
+			}
+		}
+
 		for (let i = 0; i < 6; i++) {
-			if (rand === i) {
+			if (noEnemy1 === i || noEnemy2 === i) {
 				continue;
 			}
 			const enemy = this.enemies.create(i * 48 + 130, -10, 'enemy');
