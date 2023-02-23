@@ -12,13 +12,22 @@ export default class PlayScene extends Phaser.Scene {
 	bgSound;
 	scoreLabel;
 	score!: number;
+	emitter;
 
 	create() {
+		const particles = this.add.particles('pixel');
 		this.score = 0;
 		this.player = this.physics.add.image(150, 150, 'player');
 		this.arrow = this.input.keyboard.createCursorKeys();
 		this.scoreLabel = this.add.text(30, 25, 'score: 0', {fontFamily: 'Arial', fontSize: '22px', color: '#fff'});
 		this.enemies = this.physics.add.group();
+		this.emitter = particles.createEmitter({
+			quantity: 15,
+			speed: {min: -150, max: 150},
+			scale: {start: 2, end: 0.1},
+			lifespan: 800,
+			on: false,
+		})
 
 		this.time.addEvent({
 			delay: Phaser.Math.Between(900, 1200),
@@ -37,7 +46,6 @@ export default class PlayScene extends Phaser.Scene {
 		movePlayer(this.arrow, this.player);
 
 		if (this.physics.overlap(this.player, this.enemies)) {
-			this.bgSound.destroy();
 			this.playerDie();
 		}
 	}
@@ -109,6 +117,14 @@ export default class PlayScene extends Phaser.Scene {
 	}
 
 	playerDie() {
-		this.scene.start('MenuScene', {score: this.score});
+		this.player.destroy();
+		this.cameras.main.shake(300, 0.02);
+		this.emitter.setPosition(this.player.x, this.player.y);
+		this.emitter.explode();
+
+		this.time.addEvent({
+			delay: 1000,
+			callback: () => {this.bgSound.destroy(); this.scene.start('MenuScene', {score: this.score})}
+		})
 	}
 }
