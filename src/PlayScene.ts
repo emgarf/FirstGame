@@ -1,20 +1,22 @@
 import {movePlayer} from './movePlayer';
-
+import {addRightSingleEnemy, addTopRowEnemies, addTopSingleEnemy} from './enemies';
 export default class PlayScene extends Phaser.Scene {
 	constructor() {
 		super('PlayScene');
 	}
 
-	arrow!: Phaser.Types.Input.Keyboard.CursorKeys;
-	player!: Phaser.Types.Physics.Arcade.ImageWithDynamicBody;
-	walls!: Phaser.Physics.Arcade.StaticGroup;
-	enemies;
+	arrow: Phaser.Types.Input.Keyboard.CursorKeys;
+	deathSound: Phaser.Sound.BaseSound;
+	player: Phaser.Types.Physics.Arcade.ImageWithDynamicBody;
+	walls: Phaser.Physics.Arcade.StaticGroup;
+	scoreLabel: Phaser.GameObjects.Text;
+	score: number;
+	enemies: Phaser.Physics.Arcade.Group;
+	nextEnemy: number;
+	prevEnemy: number;
+	isAscending: boolean;
 	bgSound;
-	deathSound;
-	scoreLabel;
-	score!: number;
 	emitter;
-	nextEnemy!: number;
 
 	create() {
 		const particles = this.add.particles('pixelPlayer');
@@ -37,7 +39,9 @@ export default class PlayScene extends Phaser.Scene {
 		this.bgSound.play();
 		this.createWorld();
 
+		this.isAscending = false;
 		this.nextEnemy = 0;
+		this.prevEnemy = 4;
 	}
 
 	update() {
@@ -45,7 +49,12 @@ export default class PlayScene extends Phaser.Scene {
 
 		if (this.nextEnemy < now) {
 			this.handleEnemies();
-			this.nextEnemy = now + Phaser.Math.Between(1000, 1400);
+			if (this.score < 100) {
+				this.nextEnemy = now + 1200;
+			} else {
+				this.nextEnemy = now + 300;
+			}
+			this.incrementScore();
 		}
 
 		this.physics.collide(this.player, this.walls);
@@ -56,78 +65,50 @@ export default class PlayScene extends Phaser.Scene {
 		}
 	}
 
-	handleEnemies() {
-		if (this.score <= 40) {
-			this.addTopSingleEnemy();
-		} else {
-			this.addTopRowEnemies(this.score);
-			if (this.score > 150) {
-				this.addRightSingleEnemy()
-			}
-		}
-	}
-
-	addPyramidEnemies() {
-		const enemy = this.enemies.create(Phaser.Math.Between(130, 370), -10, 'enemy');
-		enemy.body.velocity.y = 200;
-
-
-	}
-
-	addTopSingleEnemy() {
-		const enemy = this.enemies.create(Phaser.Math.Between(130, 370), -10, 'enemy');
-		enemy.body.velocity.y = 200 + this.score;
-
-		this.time.addEvent({
-			delay: 5000,
-			callback: () => enemy.destroy(),
-		})
-
-		this.incrementScore();
-	}
-
-	addRightSingleEnemy() {
-		const enemy = this.enemies.create(510, Phaser.Math.Between(130, 370), 'enemy');
-		enemy.body.velocity.x = -200;
-
-		this.time.addEvent({
-			delay: 5000,
-			callback: () => enemy.destroy(),
-		})
-
-		this.incrementScore();
-	}
-
-	addTopRowEnemies(currentScore: number) {
-		const noEnemy1 = Phaser.Math.Between(0, 5);
-		let noEnemy2 = 10;
-		if (currentScore < 100) {
-			if (noEnemy1 === 5) {
-				noEnemy2 = 4;
-			} else {
-				noEnemy2 = noEnemy1 + 1;
-			}
-		}
-
-		for (let i = 0; i < 6; i++) {
-			if (noEnemy1 === i || noEnemy2 === i) {
-				continue;
-			}
-			const enemy = this.enemies.create(i * 48 + 130, -10, 'enemy');
-			enemy.body.velocity.y = Math.min(200 + this.score, 300);
-
-			this.time.addEvent({
-				delay: 5000,
-				callback: () => enemy.destroy(),
-			})
-		}
-
-		this.incrementScore();
-	}
-
 	incrementScore() {
 		this.score += 5;
 		this.scoreLabel.setText('score: ' + this.score);
+	}
+
+	handleEnemies() {
+		if (this.score <= 40) {
+			addTopSingleEnemy(this.enemies, this.score, this.time);
+		} else {
+			if (this.score < 100) {
+				addTopRowEnemies(this.enemies, this.score, this.time);
+			} else {
+				this.handlePyramidEnemies();
+				if (this.score > 200) {
+					addRightSingleEnemy(this.enemies, this.time);
+				}
+			}
+		}
+	}
+	
+	handlePyramidEnemies() {
+		if (this.prevEnemy === 0) {
+			this.isAscending = true;
+		}
+		if (this.prevEnemy === 4) {
+			this.isAscending = false;
+		}
+		this.pyramidEnemies();
+	}
+
+	pyramidEnemies() {
+		for (let i = 0; i < 6; i++) {
+			if (this.prevEnemy === i || this.prevEnemy + 1 === i) {
+				continue;
+			}
+			const enemy = this.enemies.create(i * 48 + 130, -10, 'enemy');
+			enemy.body.velocity.y = 200;
+		}
+		if (this.isAscending === false) {
+			this.prevEnemy -= 1;
+		}
+		if (this.isAscending === true) {
+			this.prevEnemy += 1;
+		}
 	}
 
 	createWorld() {

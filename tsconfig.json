@@ -13,6 +13,7 @@
 		"esModuleInterop": true,
 		"allowSyntheticDefaultImports": true,
 		"sourceMap": true,
+		"strictPropertyInitialization": false,
 		"baseUrl": "./src",
 		"paths": {
 		  "~/*": ["./*"]
