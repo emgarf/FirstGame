@@ -50,7 +50,7 @@ export default class PlayScene extends Phaser.Scene {
 		if (this.nextEnemy < now) {
 			this.handleEnemies();
 			if (this.score < 200) {
-				this.nextEnemy = this.nextEnemyTimer(now, 1000, 250, 130);
+				this.nextEnemy = this.nextEnemyTimer(now, 1000, 300, 130);
 			} else if (this.score < 300) {
 				this.nextEnemy = this.nextEnemyTimer(now, 1200, 1000, 250);
 			} else {
