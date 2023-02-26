@@ -49,10 +49,10 @@ export default class PlayScene extends Phaser.Scene {
 
 		if (this.nextEnemy < now) {
 			this.handleEnemies();
-			if (this.score < 100) {
-				this.nextEnemy = this.nextEnemyTimer(now, 1000, 100, 100);
-			} else if (this.score < 150) {
-				this.nextEnemy = this.nextEnemyTimer(now, 1200, 800, 150);
+			if (this.score < 200) {
+				this.nextEnemy = this.nextEnemyTimer(now, 1000, 250, 130);
+			} else if (this.score < 300) {
+				this.nextEnemy = this.nextEnemyTimer(now, 1200, 1000, 250);
 			} else {
 				this.nextEnemy = now + 300;
 			}
@@ -73,14 +73,14 @@ export default class PlayScene extends Phaser.Scene {
 	}
 
 	handleEnemies() {
-		if (this.score <= 100) {
+		if (this.score <= 200) {
 			addTopSingleEnemy(this.enemies, this.score, this.time);
 		} else {
-			if (this.score < 150) {
+			if (this.score < 300) {
 				addTopRowEnemies(this.enemies, this.score, this.time);
 			} else {
 				this.handlePyramidEnemies();
-				if (this.score > 200) {
+				if (this.score > 550) {
 					addRightSingleEnemy(this.enemies, this.time);
 				}
 			}

@@ -21,7 +21,7 @@ export const addRightSingleEnemy = (enemies: Phaser.Physics.Arcade.Group, time: 
 export const addTopRowEnemies = (enemies: Phaser.Physics.Arcade.Group, score: number, time: Phaser.Time.Clock) => {
   const noEnemy1 = Phaser.Math.Between(0, 5);
   let noEnemy2 = 10;
-  if (score < 100) {
+  if (score < 250) {
     if (noEnemy1 === 5) {
       noEnemy2 = 4;
     } else {
