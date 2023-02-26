@@ -34,7 +34,7 @@ export const addTopRowEnemies = (enemies: Phaser.Physics.Arcade.Group, score: nu
       continue;
     }
     const enemy = enemies.create(i * 48 + 130, -10, 'enemy');
-    enemy.body.velocity.y = Math.min(200 + score, 300);
+    enemy.body.velocity.y = Math.min(200 + score, 250);
 
     time.addEvent({
       delay: 5000,

@@ -50,7 +50,9 @@ export default class PlayScene extends Phaser.Scene {
 		if (this.nextEnemy < now) {
 			this.handleEnemies();
 			if (this.score < 100) {
-				this.nextEnemy = now + 1200;
+				this.nextEnemy = this.nextEnemyTimer(now, 1000, 100, 100);
+			} else if (this.score < 150) {
+				this.nextEnemy = this.nextEnemyTimer(now, 1200, 800, 150);
 			} else {
 				this.nextEnemy = now + 300;
 			}
@@ -71,10 +73,10 @@ export default class PlayScene extends Phaser.Scene {
 	}
 
 	handleEnemies() {
-		if (this.score <= 40) {
+		if (this.score <= 100) {
 			addTopSingleEnemy(this.enemies, this.score, this.time);
 		} else {
-			if (this.score < 100) {
+			if (this.score < 150) {
 				addTopRowEnemies(this.enemies, this.score, this.time);
 			} else {
 				this.handlePyramidEnemies();
@@ -108,6 +110,14 @@ export default class PlayScene extends Phaser.Scene {
 		}
 		if (this.isAscending === true) {
 			this.prevEnemy += 1;
+		}
+	}
+
+	nextEnemyTimer(now, startDifficulty, endDifficulty, scoreToReachEnd) {
+		if (this.nextEnemy < now) {
+			const progress = Math.min(this.score / scoreToReachEnd, 1);
+			const delay = startDifficulty - (startDifficulty - endDifficulty) * progress;
+			return now + delay;
 		}
 	}
 
